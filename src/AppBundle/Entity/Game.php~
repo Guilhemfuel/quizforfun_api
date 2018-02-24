@@ -1,0 +1,211 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Game
+ *
+ * @ORM\Table(name="game")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\GameRepository")
+ */
+class Game
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="nbPlayerMin", type="integer", nullable=true)
+     */
+    private $nbPlayerMin;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="nbPlayerMax", type="integer", nullable=true)
+     */
+    private $nbPlayerMax;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=255, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Party", mappedBy="game", cascade={"persist"})
+     */
+    private $parties;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Player", mappedBy="game", cascade={"persist"})
+     */
+    private $players;
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Game
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set nbPlayerMin
+     *
+     * @param integer $nbPlayerMin
+     *
+     * @return Game
+     */
+    public function setNbPlayerMin($nbPlayerMin)
+    {
+        $this->nbPlayerMin = $nbPlayerMin;
+
+        return $this;
+    }
+
+    /**
+     * Get nbPlayerMin
+     *
+     * @return int
+     */
+    public function getNbPlayerMin()
+    {
+        return $this->nbPlayerMin;
+    }
+
+    /**
+     * Set nbPlayerMax
+     *
+     * @param integer $nbPlayerMax
+     *
+     * @return Game
+     */
+    public function setNbPlayerMax($nbPlayerMax)
+    {
+        $this->nbPlayerMax = $nbPlayerMax;
+
+        return $this;
+    }
+
+    /**
+     * Get nbPlayerMax
+     *
+     * @return int
+     */
+    public function getNbPlayerMax()
+    {
+        return $this->nbPlayerMax;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Game
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->parties = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add party
+     *
+     * @param \AppBundle\Entity\Party $party
+     *
+     * @return Game
+     */
+    public function addParty(\AppBundle\Entity\Party $party)
+    {
+        $this->parties[] = $party;
+        $party->setGame($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove party
+     *
+     * @param \AppBundle\Entity\Party $party
+     */
+    public function removeParty(\AppBundle\Entity\Party $party)
+    {
+        $this->parties->removeElement($party);
+    }
+
+    /**
+     * Get parties
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getParties()
+    {
+        return $this->parties;
+    }
+}

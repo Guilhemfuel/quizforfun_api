@@ -1,0 +1,51 @@
+#File use to avoid this error : A circular reference has been detected (configured limit: 1)
+
+AppBundle\Entity\Game:
+    attributes:
+        id:
+            groups: ['game', player]
+        code:
+            groups: ['game', player]
+        nbPlayerMin:
+            groups: ['game', player]
+        nbPlayerMax:
+            groups: ['game', player]
+        description:
+            groups: ['game', player]
+        players:
+            groups: ['game']
+
+AppBundle\Entity\Player:
+    attributes:
+        id:
+            groups: ['player', game]
+        name:
+            groups: ['player', game]
+        device:
+            groups: ['player', game]
+        owner:
+            groups: ['player', game]
+        score:
+            groups: ['player', game]
+        game:
+            groups: ['player']
+
+AppBundle\Entity\Question:
+    attributes:
+        id:
+            groups: ['question', answer]
+        question:
+            groups: ['question', answer]
+        answers:
+            groups: ['question']
+
+AppBundle\Entity\Answer:
+    attributes:
+        id:
+            groups: ['answer', question]
+        answer:
+            groups: ['answer', question]
+        goodAnswer:
+            groups: ['answer', question]
+        question:
+            groups: ['answer']

@@ -1,0 +1,27 @@
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /documentation
+
+app:
+    resource: '@AppBundle/Controller/DefaultController.php'
+    type: annotation
+
+games:
+    type:     rest
+    resource: AppBundle\Controller\GameController
+    prefix: /api
+
+players:
+    type:     rest
+    resource: AppBundle\Controller\PlayerController
+    prefix: /api
+
+questions:
+    type:     rest
+    resource: AppBundle\Controller\QuestionController
+    prefix: /api
+
+answers:
+    type:     rest
+    resource: AppBundle\Controller\AnswerController
+    prefix: /api

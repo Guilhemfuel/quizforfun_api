@@ -1,0 +1,65 @@
+AppBundle\Entity\Game:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [code]
+            message: 'Le code existe déjà'
+    properties:
+        code:
+            - NotBlank: { message: 'Le code ne peut pas être vide' }
+            - Length:
+                min: 4
+                max: 4
+                exactMessage: 'Le code doit faire 4 caractères'
+            - Regex:
+                pattern: '#^[a-zA-Z0-9]+$#'
+                message: 'Le code ne peut contenir que des chiffres et des lettres'
+            - Type: string
+
+AppBundle\Entity\Player:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [device]
+            message: 'Device existe déjà'
+    properties:
+        name:
+            - NotNull: { message: 'Le nom ne peut pas être nul' }
+            - NotBlank: { message: 'Le nom ne peut pas être vide' }
+            - Length:
+                min: 2
+                max: 20
+                minMessage: 'Le nom doit faire {{ limit }} caractères minimum'
+                maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères'
+            - Type: string
+        game:
+            - NotNull: { message: 'La partie ne peut pas être nul' }
+            - NotBlank: { message: 'La partie ne peut pas être vide' }
+
+AppBundle\Entity\Question:
+    properties:
+        question:
+            - NotNull: { message: 'La question ne peut pas être nul' }
+            - NotBlank: { message: 'La question ne peut pas être vide' }
+            - Length:
+                min: 2
+                max: 200
+                minMessage: 'La question doit faire {{ limit }} caractères minimum'
+                maxMessage: 'La question ne peut pas dépasser {{ limit }} caractères'
+            - Type: string
+
+AppBundle\Entity\Answer:
+    properties:
+        answer:
+            - NotNull: { message: 'La réponse ne peut pas être nul' }
+            - NotBlank: { message: 'La réponse ne peut pas être vide' }
+            - Length:
+                min: 2
+                max: 200
+                minMessage: 'La réponse doit faire {{ limit }} caractères minimum'
+                maxMessage: 'La réponse ne peut pas dépasser {{ limit }} caractères'
+            - Type: string
+        goodAnswer:
+            - Type:
+                type: bool
+                message: 'Le type doit être {{ type }}'
+        question:
+            - NotNull: { message: 'La réponse doit être lié à une question' }

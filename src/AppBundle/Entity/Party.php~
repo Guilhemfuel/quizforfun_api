@@ -1,0 +1,100 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Party
+ *
+ * @ORM\Table(name="party")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PartyRepository")
+ */
+class Party
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="code", type="string", length=4, unique=true)
+     */
+    private $code;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Game", inversedBy="parties")
+     * @ORM\JoinColumn(name="game_id", referencedColumnName="id", nullable=false)
+     */
+    private $game;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Player", mappedBy="party", cascade={"persist"})
+     */
+    private $players;
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set code
+     *
+     * @param string $code
+     *
+     * @return Party
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * Set game
+     *
+     * @param \AppBundle\Entity\Game $game
+     *
+     * @return Party
+     */
+    public function setGame(\AppBundle\Entity\Game $game)
+    {
+        $this->game = $game;
+
+        return $this;
+    }
+
+    /**
+     * Get game
+     *
+     * @return \AppBundle\Entity\Game
+     */
+    public function getGame()
+    {
+        return $this->game;
+    }
+}
