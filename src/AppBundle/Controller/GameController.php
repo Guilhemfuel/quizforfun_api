@@ -45,7 +45,7 @@ class GameController extends Controller
         $entity = $this->getDoctrine()->getRepository('AppBundle:Game')->findByCode($code);
 
         if (empty($entity)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Game not found');
+            return View::create(['message' => 'Cette partie n\'existe pas'], Response::HTTP_NOT_FOUND);
         }
 
         return $entity;

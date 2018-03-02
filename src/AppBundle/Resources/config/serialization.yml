@@ -25,8 +25,6 @@ AppBundle\Entity\Player:
             groups: ['player', game]
         score:
             groups: ['player', game]
-        game:
-            groups: ['player']
 
 AppBundle\Entity\Question:
     attributes:

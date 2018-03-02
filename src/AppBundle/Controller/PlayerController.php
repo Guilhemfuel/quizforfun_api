@@ -73,7 +73,7 @@ class PlayerController extends Controller
         $entity = $this->getDoctrine()->getRepository('AppBundle:Player')->find($id);
 
         if (empty($entity)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Game not found');
+            return new JsonResponse(['message' => 'Ce joueur n\'existe pas'], Response::HTTP_NOT_FOUND);
         }
 
         return $entity;
@@ -99,7 +99,7 @@ class PlayerController extends Controller
             $game = $form->get('game')->getData();
 
             $player = $this->getDoctrine()->getRepository('AppBundle:Player')->findOneBy(['name' => $name, 'game' => $game]);
-            $game = $this->getDoctrine()->getRepository('AppBundle:Game')->findOneByCode($player->getGame()->getCode());
+            $game = $this->getDoctrine()->getRepository('AppBundle:Game')->find($game);
 
             // $nb = count($game->getPlayers());
             if (count($game->getPlayers()) < $game->getNbPlayerMax()) {
