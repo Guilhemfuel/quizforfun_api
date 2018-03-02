@@ -98,20 +98,23 @@ class PlayerController extends Controller
             $name = $form->get('name')->getData();
             $game = $form->get('game')->getData();
 
-            //Check si le pseudo existe déjà dans la partie
             $player = $this->getDoctrine()->getRepository('AppBundle:Player')->findOneBy(['name' => $name, 'game' => $game]);
+            $game = $this->getDoctrine()->getRepository('AppBundle:Game')->findOneByCode($player->getGame()->getCode());
 
-            if (!$player)
-            {
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($entity);
-                $em->flush();
-                return $entity;
+            // $nb = count($game->getPlayers());
+            if (count($game->getPlayers()) < $game->getNbPlayerMax()) {
+                // Check si le pseudo n'existe pas
+                if (!$player) {
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($entity);
+                    $em->flush();
+                    return $entity;
+                } else {
+                    return new JsonResponse(['message' => 'Ce pseudo est déjà pris'], Response::HTTP_NOT_FOUND);
+                }
+            } else {
+                return new JsonResponse(['message' => 'Cette partie est complète'], Response::HTTP_NOT_FOUND);
             }
-            else {
-                return new JsonResponse(['message' => 'Ce pseudo est déjà pris'], Response::HTTP_NOT_FOUND);
-            }
-
         } else {
             return $form;
         }
