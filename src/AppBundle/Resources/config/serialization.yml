@@ -21,8 +21,6 @@ AppBundle\Entity\Player:
             groups: ['player', game]
         name:
             groups: ['player', game]
-        device:
-            groups: ['player', game]
         owner:
             groups: ['player', game]
         score:

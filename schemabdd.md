@@ -15,7 +15,6 @@ Party
 Player
 - id
 - name
-- device
 - party#
 - owner
 - score

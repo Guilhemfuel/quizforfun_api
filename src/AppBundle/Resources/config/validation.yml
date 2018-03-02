@@ -16,10 +16,6 @@ AppBundle\Entity\Game:
             - Type: string
 
 AppBundle\Entity\Player:
-    constraints:
-        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
-            fields: [device]
-            message: 'Device existe déjà'
     properties:
         name:
             - NotNull: { message: 'Le nom ne peut pas être nul' }

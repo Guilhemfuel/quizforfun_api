@@ -15,9 +15,9 @@ class LoadGamesData implements FixtureInterface
         );
 
         $players = array(
-            array('name' => 'Jean', 'device' => 'android7854', 'owner' => false, 'score' => '2'),
-            array('name' => 'Louis', 'device' => 'ios8796', 'owner' => false, 'score' => '0'),
-            array('name' => 'Risitas', 'device' => 'android9843', 'owner' => true, 'score' => '4')
+            array('name' => 'Jean', 'owner' => false, 'score' => '2'),
+            array('name' => 'Louis', 'owner' => false, 'score' => '0'),
+            array('name' => 'Risitas', 'owner' => true, 'score' => '4')
         );
 
         foreach($games as $key => $g) {
@@ -30,7 +30,6 @@ class LoadGamesData implements FixtureInterface
             foreach($players as $p) {
                 $player = new Player();
                 $player->setName($p['name']);
-                $player->setDevice($p['device']);
                 $player->setOwner($p['owner']);
                 $player->setScore($p['score']);
                 $player->setGame($game);

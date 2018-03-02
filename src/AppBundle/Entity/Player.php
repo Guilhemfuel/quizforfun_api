@@ -29,13 +29,6 @@ class Player
     private $name;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="device", type="string", length=255, unique=true)
-     */
-    private $device;
-
-    /**
      * @var bool
      *
      * @ORM\Column(name="owner", type="boolean", nullable=true)
@@ -88,30 +81,6 @@ class Player
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Set device
-     *
-     * @param string $device
-     *
-     * @return Player
-     */
-    public function setDevice($device)
-    {
-        $this->device = $device;
-
-        return $this;
-    }
-
-    /**
-     * Get device
-     *
-     * @return string
-     */
-    public function getDevice()
-    {
-        return $this->device;
     }
 
     /**
