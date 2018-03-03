@@ -50,7 +50,7 @@ class PlayerController extends Controller
      * @Rest\View(serializerGroups={"player"})
      * @Rest\Get("/players")
      */
-    public function getPlayersAction(Request $request)
+    public function getPlayersAction()
     {
         $entities = $this->getDoctrine()->getRepository('AppBundle:Player')->findAll();
 
@@ -68,7 +68,7 @@ class PlayerController extends Controller
      * @Rest\View(serializerGroups={"player"})
      * @Rest\Get("/player/{id}")
      */
-    public function getPlayerAction($id, Request $request)
+    public function getPlayerAction($id)
     {
         $entity = $this->getDoctrine()->getRepository('AppBundle:Player')->find($id);
 
@@ -77,6 +77,24 @@ class PlayerController extends Controller
         }
 
         return $entity;
+    }
+
+    /**
+     *
+     * @ApiDoc(description="Récupérer la partie en cours d'un joueur")
+     *
+     * @Rest\View(serializerGroups={"player"})
+     * @Rest\Get("/currentPlayerGame/{fingerprint}")
+     */
+    public function getCurrentPlayerGameAction($fingerprint)
+    {
+        $entity = $this->getDoctrine()->getRepository('AppBundle:Player')->getCurrentPlayerInGame($fingerprint);
+
+        if (!empty($entity)) {
+            return $entity;
+        }
+
+        return View::create(['message' => 'Aucune partie en cours'], Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -164,6 +182,11 @@ class PlayerController extends Controller
         if ($entity) {
             $em->remove($entity);
             $em->flush();
+
+            return new JsonResponse(['message' => 'Player deleted'], Response::HTTP_OK);
+        }
+        else {
+            return new JsonResponse(['message' => 'Player not found'], Response::HTTP_NOT_FOUND);
         }
     }
 }

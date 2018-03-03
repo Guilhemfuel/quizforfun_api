@@ -16,6 +16,18 @@ class DefaultController extends Controller
     public function indexAction(Request $request)
     {
         // Make some tests here
+        $entity = $this->getDoctrine()->getRepository('AppBundle:Player')->getCurrentPlayerInGame('c4d52175fad8464db98175587c686967');
+
+        // SELECT * FROM `player` LEFT JOIN game ON player.game_id = game.id WHERE fingerprint = 'c4d52175fad8464db98175587c686967' AND (isFinished IS NULL OR isFinished = 0)
+
+        if (!$entity) {
+            dump('xd');
+        }
+        else {
+            dump('quoi');
+            dump($entity);
+        }
+
 
         // replace this example code with whatever you need
         return $this->render('default/index.html.twig', [

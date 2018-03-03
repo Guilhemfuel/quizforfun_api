@@ -7,11 +7,15 @@ AppBundle\Entity\Game:
         code:
             groups: ['game', player]
         nbPlayerMin:
-            groups: ['game', player]
+            groups: ['game']
         nbPlayerMax:
-            groups: ['game', player]
+            groups: ['game']
         description:
-            groups: ['game', player]
+            groups: ['game']
+        isStarted:
+            groups: ['game']
+        isFinished:
+            groups: ['game']
         players:
             groups: ['game']
 
@@ -21,10 +25,14 @@ AppBundle\Entity\Player:
             groups: ['player', game]
         name:
             groups: ['player', game]
+        fingerprint:
+            groups: ['player', game]
         owner:
             groups: ['player', game]
         score:
             groups: ['player', game]
+        game:
+            groups: ['player']
 
 AppBundle\Entity\Question:
     attributes:

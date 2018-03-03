@@ -50,6 +50,20 @@ class Game
     private $description;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="isStarted", type="boolean", nullable=true)
+     */
+    private $isStarted = 0;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="isFinished", type="boolean", nullable=true)
+     */
+    private $isFinished = 0;
+
+    /**
      * @ORM\OneToMany(targetEntity="Player", mappedBy="game", cascade={"persist"})
      */
     private $players;
@@ -96,8 +110,12 @@ class Game
      *
      * @return Game
      */
-    public function setNbPlayerMin($nbPlayerMin)
+    public function setNbPlayerMin($nbPlayerMin = 3)
     {
+        if (!isset($nbPlayerMin) or empty($nbPlayerMin)) {
+            $nbPlayerMin = 3;
+        }
+
         $this->nbPlayerMin = $nbPlayerMin;
 
         return $this;
@@ -120,8 +138,12 @@ class Game
      *
      * @return Game
      */
-    public function setNbPlayerMax($nbPlayerMax)
+    public function setNbPlayerMax($nbPlayerMax = 10)
     {
+        if (!isset($nbPlayerMax) or empty($nbPlayerMax)) {
+            $nbPlayerMax = 10;
+        }
+
         $this->nbPlayerMax = $nbPlayerMax;
 
         return $this;
@@ -162,10 +184,62 @@ class Game
     }
 
     /**
+     * Set isStarted
+     *
+     * @param boolean $isStarted
+     *
+     * @return Game
+     */
+    public function setIsStarted($isStarted = 0)
+    {
+        $this->isStarted = $isStarted;
+
+        return $this;
+    }
+
+    /**
+     * Get isStarted
+     *
+     * @return bool
+     */
+    public function getIsStarted()
+    {
+        return $this->isStarted;
+    }
+
+    /**
+     * Set isFinished
+     *
+     * @param boolean $isFinished
+     *
+     * @return Game
+     */
+    public function setIsFinished($isFinished = 0)
+    {
+        $this->isFinished = $isFinished;
+
+        return $this;
+    }
+
+    /**
+     * Get isFinished
+     *
+     * @return bool
+     */
+    public function getIsFinished()
+    {
+        return $this->isFinished;
+    }
+
+    /**
      * Constructor
      */
     public function __construct()
     {
+        $this->nbPlayerMin = 3;
+        $this->nbPlayerMax = 10;
+        $this->isStarted = 0;
+        $this->isFinished = 0;
         $this->players = new \Doctrine\Common\Collections\ArrayCollection();
     }
 

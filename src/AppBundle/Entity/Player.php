@@ -29,6 +29,13 @@ class Player
     private $name;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="fingerprint", type="string", length=250, nullable=true)
+     */
+    private $fingerprint;
+
+    /**
      * @var bool
      *
      * @ORM\Column(name="owner", type="boolean", nullable=true)
@@ -81,6 +88,30 @@ class Player
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set fingerprint
+     *
+     * @param string $fingerprint
+     *
+     * @return Player
+     */
+    public function setFingerprint($fingerprint)
+    {
+        $this->fingerprint = $fingerprint;
+
+        return $this;
+    }
+
+    /**
+     * Get fingerprint
+     *
+     * @return string
+     */
+    public function getFingerprint()
+    {
+        return $this->fingerprint;
     }
 
     /**

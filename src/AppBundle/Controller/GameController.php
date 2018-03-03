@@ -22,7 +22,7 @@ class GameController extends Controller
      * @Rest\View(serializerGroups={"game"})
      * @Rest\Get("/games")
      */
-    public function getGamesAction(Request $request)
+    public function getGamesAction()
     {
         $entities = $this->getDoctrine()->getRepository('AppBundle:Game')->findAll();
 
@@ -40,7 +40,7 @@ class GameController extends Controller
      * @Rest\View(serializerGroups={"game"})
      * @Rest\Get("/game/{code}")
      */
-    public function getGameAction($code, Request $request)
+    public function getGameAction($code)
     {
         $entity = $this->getDoctrine()->getRepository('AppBundle:Game')->findByCode($code);
 
@@ -60,10 +60,14 @@ class GameController extends Controller
      */
     public function postGameAction(Request $request)
     {
-        $entity = new Game();
-        $form = $this->createForm(GameType::class, $entity);
 
-        $form->submit($request->request->all()); // Validation des données
+        $entity = new Game();
+
+        // Générer un code pour la partie
+        $entity->setCode($this->randomCode());
+
+        $form = $this->createForm(GameType::class, $entity);
+        $form->submit($request->request->all());
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -111,7 +115,7 @@ class GameController extends Controller
      * @Rest\View(statusCode=204)
      * @Rest\Delete("/game/remove/{id}")
      */
-    public function removeGameAction($id, Request $request)
+    public function removeGameAction($id)
     {
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('AppBundle:Game')->find($id);
@@ -119,6 +123,19 @@ class GameController extends Controller
         if ($entity) {
             $em->remove($entity);
             $em->flush();
+
+            return new JsonResponse(['message' => 'Game deleted'], Response::HTTP_OK);
         }
+    }
+
+    public function randomCode($length = 4) {
+        $str = "";
+        $characters = array_merge(range('a','z'), range('0','9'));
+        $max = count($characters) - 1;
+        for ($i = 0; $i < $length; $i++) {
+            $rand = mt_rand(0, $max);
+            $str .= $characters[$rand];
+        }
+        return $str;
     }
 }

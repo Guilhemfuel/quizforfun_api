@@ -10,4 +10,19 @@ namespace AppBundle\Repository;
  */
 class PlayerRepository extends \Doctrine\ORM\EntityRepository
 {
+    // Récupérer le joueur sur une game active
+    public function getCurrentPlayerInGame($fingerprint)
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        $qb
+            ->leftJoin('a.game', 'game')
+            ->where('a.fingerprint = :fingerprint')
+            ->setParameter('fingerprint', $fingerprint)
+            ->andWhere('game.isFinished = 0 OR game.isFinished is null')
+            ->setMaxResults(1)
+        ;
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 }

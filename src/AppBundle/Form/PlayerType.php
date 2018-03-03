@@ -16,16 +16,10 @@ class PlayerType extends AbstractType
     {
         $builder
             ->add('name')
+            ->add('fingerprint')
             ->add('owner')
             ->add('score')
             ->add('game');
-        /*
-            ->add('game', CollectionType::class, [
-                'entry_type' => GameType::class,
-                'allow_add' => true,
-                'error_bubbling' => false,
-                ]);
-        */
     }
     
     /**
