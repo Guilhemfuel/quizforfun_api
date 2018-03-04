@@ -14,15 +14,14 @@ use AppBundle\Entity\Player;
 use AppBundle\Form\PlayerType;
 use Pusher\Pusher;
 
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\YamlFileLoader;
+
 class PlayerController extends Controller
 {
-
-    /**
-     *
-     * @Rest\View(serializerGroups={"player"})
-     * @Rest\Get("/test")
-     */
-    public function getTestAction(Request $request)
+    private function pusher($channel, $event, $data)
     {
         $options = array(
             'cluster' => 'eu'
@@ -37,10 +36,18 @@ class PlayerController extends Controller
             $options
         );
 
-        $data['message'] = 'hello world';
-        $xd = $pusher->trigger('my-channel', 'my-event', $data);
+        $pusher->trigger($channel, $event, $data);
+    }
 
-        return 'Pusher';
+    private function serialize($object, $group)
+    {
+        $classMetadataFactory = new ClassMetadataFactory(new YamlFileLoader(__DIR__.'/../Resources/config/serialization.yml'));
+        $normalizer = new ObjectNormalizer($classMetadataFactory);
+        $serializer = new Serializer(array($normalizer));
+
+        $data = $serializer->normalize($object, null, array('groups' => array($group)));
+
+        return json_encode($data);
     }
 
     /**
@@ -121,15 +128,16 @@ class PlayerController extends Controller
 
             // $nb = count($game->getPlayers());
             if (count($game->getPlayers()) < $game->getNbPlayerMax()) {
-                // Check si le pseudo n'existe pas
-                if (!$player) {
-                    $em = $this->getDoctrine()->getManager();
-                    $em->persist($entity);
-                    $em->flush();
-                    return $entity;
-                } else {
-                    return new JsonResponse(['message' => 'Ce pseudo est déjà pris'], Response::HTTP_NOT_FOUND);
-                }
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($entity);
+                $em->flush();
+
+                $data = $this->serialize($game, 'game');
+
+                $this->pusher($game->getCode(), 'game', $data);
+
+                return $entity;
+
             } else {
                 return new JsonResponse(['message' => 'Cette partie est complète'], Response::HTTP_NOT_FOUND);
             }
@@ -188,5 +196,23 @@ class PlayerController extends Controller
         else {
             return new JsonResponse(['message' => 'Player not found'], Response::HTTP_NOT_FOUND);
         }
+    }
+
+    private function getGameAction($code)
+    {
+        // Make some tests here
+        $entity = $this->getDoctrine()->getRepository('AppBundle:Game')->findByCode($code);
+
+        // Création d'une vue FOSRestBundle
+        $view = \FOS\RestBundle\View\View::create($entity);
+        $view->setFormat('json');
+
+        $context = new \FOS\RestBundle\Context\Context();
+        $context->setVersion('1.0');
+        $context->addGroup('game');
+
+        $view->setContext($context);
+
+        return $view;
     }
 }
