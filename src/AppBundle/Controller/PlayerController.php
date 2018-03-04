@@ -132,10 +132,6 @@ class PlayerController extends Controller
                 $em->persist($entity);
                 $em->flush();
 
-                $data = $this->serialize($game, 'game');
-
-                $this->pusher($game->getCode(), 'game', $data);
-
                 return $entity;
 
             } else {
@@ -182,7 +178,7 @@ class PlayerController extends Controller
      * @Rest\View(statusCode=204)
      * @Rest\Delete("/player/remove/{id}")
      */
-    public function removePlayerAction($id, Request $request)
+    public function removePlayerAction($id)
     {
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('AppBundle:Player')->find($id);
@@ -198,21 +194,19 @@ class PlayerController extends Controller
         }
     }
 
-    private function getGameAction($code)
+    /**
+     *
+     * @ApiDoc(description="Actualiser les infos de tout les joueurs")
+     *
+     * @Rest\Get("/refreshGame/{code}")
+     */
+    public function refreshGameAction($code)
     {
-        // Make some tests here
-        $entity = $this->getDoctrine()->getRepository('AppBundle:Game')->findByCode($code);
+        $game = $this->getDoctrine()->getRepository('AppBundle:Game')->findOneBy(array('code' => $code));
 
-        // Création d'une vue FOSRestBundle
-        $view = \FOS\RestBundle\View\View::create($entity);
-        $view->setFormat('json');
+        $data = $this->serialize($game, 'game');
+        $this->pusher($game->getCode(), 'game', $data);
 
-        $context = new \FOS\RestBundle\Context\Context();
-        $context->setVersion('1.0');
-        $context->addGroup('game');
-
-        $view->setContext($context);
-
-        return $view;
+        return new JsonResponse(['message' => 'Refresh'], Response::HTTP_OK);
     }
 }
