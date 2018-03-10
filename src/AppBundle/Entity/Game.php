@@ -110,10 +110,10 @@ class Game
      *
      * @return Game
      */
-    public function setNbPlayerMin($nbPlayerMin = 3)
+    public function setNbPlayerMin($nbPlayerMin = 2)
     {
         if (!isset($nbPlayerMin) or empty($nbPlayerMin)) {
-            $nbPlayerMin = 3;
+            $nbPlayerMin = 2;
         }
 
         $this->nbPlayerMin = $nbPlayerMin;
@@ -236,7 +236,7 @@ class Game
      */
     public function __construct()
     {
-        $this->nbPlayerMin = 3;
+        $this->nbPlayerMin = 2;
         $this->nbPlayerMax = 10;
         $this->isStarted = 0;
         $this->isFinished = 0;

@@ -101,7 +101,7 @@ class PlayerController extends Controller
             return $entity;
         }
 
-        return View::create(['message' => 'Aucune partie en cours'], Response::HTTP_NOT_FOUND);
+        return new JsonResponse(['message' => 'Aucune partie en cours'], Response::HTTP_NOT_FOUND);
     }
 
     /**
