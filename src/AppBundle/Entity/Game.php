@@ -68,6 +68,11 @@ class Game
      */
     private $players;
 
+    /**
+     * @ORM\Column(name="questions", type="text", length=65535, nullable=true)
+     */
+    private $questions;
+
 
     /**
      * Get id
@@ -229,6 +234,30 @@ class Game
     public function getIsFinished()
     {
         return $this->isFinished;
+    }
+
+    /**
+     * Set questions
+     *
+     * @param string $questions
+     *
+     * @return Game
+     */
+    public function setQuestions($questions)
+    {
+        $this->questions = $questions;
+
+        return $this;
+    }
+
+    /**
+     * Get questions
+     *
+     * @return string
+     */
+    public function getQuestions()
+    {
+        return $this->questions;
     }
 
     /**

@@ -13,8 +13,24 @@ use FOS\RestBundle\View\View;
 use AppBundle\Entity\Question;
 use AppBundle\Form\QuestionType;
 
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\YamlFileLoader;
+
 class QuestionController extends Controller
 {
+    private function serialize($object, $group)
+    {
+        $classMetadataFactory = new ClassMetadataFactory(new YamlFileLoader(__DIR__.'/../Resources/config/serialization.yml'));
+        $normalizer = new ObjectNormalizer($classMetadataFactory);
+        $serializer = new Serializer(array($normalizer));
+
+        $data = $serializer->normalize($object, null, array('groups' => array($group)));
+
+        return json_encode($data);
+    }
+
     /**
      *
      * @ApiDoc(description="Récupèrer toutes les questions")
@@ -31,6 +47,35 @@ class QuestionController extends Controller
         }
 
         return $entities;
+    }
+
+    /**
+     *
+     * @ApiDoc(description="Récupèrer toutes les questions")
+     *
+     * @Rest\Get("/randomquestions")
+     */
+    public function getRandomQuestionsAction($limit = 3)
+    {
+        $entities = $this->getDoctrine()->getRepository('AppBundle:Question')->findAll();
+
+        shuffle($entities);
+
+        $arrayObj = new \ArrayObject();
+
+        $i = 0;
+        foreach($entities as $entity) {
+            $arrayObj->append($entity);
+            if (++$i == $limit) break;
+        }
+
+        if (empty($arrayObj)) {
+            return View::create(['message' => 'Aucune question'], Response::HTTP_NOT_FOUND);
+        }
+
+        $data = $this->serialize($arrayObj, 'question');
+
+        return new Response($data, Response::HTTP_OK);
     }
 
     /**

@@ -70,7 +70,12 @@ class GameController extends Controller
         $form->submit($request->request->all());
 
         if ($form->isValid()) {
+
             $em = $this->getDoctrine()->getManager();
+
+            $data = $this->forward('AppBundle:Question:getRandomQuestions', array('limit'  => 5));
+
+            $entity->setQuestions($data->getContent());
             $em->persist($entity);
             $em->flush();
             return $entity;

@@ -18,6 +18,8 @@ AppBundle\Entity\Game:
             groups: ['game']
         players:
             groups: ['game']
+        questions:
+            groups: ['game']
 
 AppBundle\Entity\Player:
     attributes:
