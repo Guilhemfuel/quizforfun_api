@@ -12,44 +12,9 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\View\View;
 use AppBundle\Entity\Player;
 use AppBundle\Form\PlayerType;
-use Pusher\Pusher;
-
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\YamlFileLoader;
 
 class PlayerController extends Controller
 {
-    private function pusher($channel, $event, $data)
-    {
-        $options = array(
-            'cluster' => 'eu'
-        );
-
-        require(dirname(__FILE__).'/../../../vendor/autoload.php');
-
-        $pusher = new Pusher(
-            'b1ed0160cc1033ce4f54',
-            'b8c985250b64b569c5c3',
-            '464485',
-            $options
-        );
-
-        $pusher->trigger($channel, $event, $data);
-    }
-
-    private function serialize($object, $group)
-    {
-        $classMetadataFactory = new ClassMetadataFactory(new YamlFileLoader(__DIR__.'/../Resources/config/serialization.yml'));
-        $normalizer = new ObjectNormalizer($classMetadataFactory);
-        $serializer = new Serializer(array($normalizer));
-
-        $data = $serializer->normalize($object, null, array('groups' => array($group)));
-
-        return json_encode($data);
-    }
-
     /**
      *
      * @ApiDoc(description="Récupèrer tous les joueurs")
@@ -192,21 +157,5 @@ class PlayerController extends Controller
         else {
             return new JsonResponse(['message' => 'Player not found'], Response::HTTP_NOT_FOUND);
         }
-    }
-
-    /**
-     *
-     * @ApiDoc(description="Actualiser les infos de tout les joueurs")
-     *
-     * @Rest\Get("/refreshGame/{code}")
-     */
-    public function refreshGameAction($code)
-    {
-        $game = $this->getDoctrine()->getRepository('AppBundle:Game')->findOneBy(array('code' => $code));
-
-        $data = $this->serialize($game, 'game');
-        $this->pusher($game->getCode(), 'game', $data);
-
-        return new JsonResponse(['message' => 'Refresh'], Response::HTTP_OK);
     }
 }

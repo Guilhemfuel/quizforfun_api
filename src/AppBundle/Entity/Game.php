@@ -73,6 +73,13 @@ class Game
      */
     private $questions;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="currentQuestion", type="integer", nullable=true)
+     */
+    private $currentQuestion = 0;
+
 
     /**
      * Get id
@@ -305,5 +312,33 @@ class Game
     public function getPlayers()
     {
         return $this->players;
+    }
+
+    /**
+     * Set currentQuestion
+     *
+     * @param integer $currentQuestion
+     *
+     * @return Game
+     */
+    public function setCurrentQuestion($currentQuestion = 0)
+    {
+        if (!isset($currentQuestion) or empty($currentQuestion)) {
+            $currentQuestion = 0;
+        }
+
+        $this->currentQuestion = $currentQuestion;
+
+        return $this;
+    }
+
+    /**
+     * Get currentQuestion
+     *
+     * @return int
+     */
+    public function getCurrentQuestion()
+    {
+        return $this->currentQuestion;
     }
 }

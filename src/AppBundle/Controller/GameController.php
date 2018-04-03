@@ -12,9 +12,61 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\View\View;
 use AppBundle\Entity\Game;
 use AppBundle\Form\GameType;
+use Pusher\Pusher;
+
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\YamlFileLoader;
 
 class GameController extends Controller
 {
+
+    private function pusher($channel, $event, $data)
+    {
+        $options = array(
+            'cluster' => 'eu'
+        );
+
+        require(dirname(__FILE__).'/../../../vendor/autoload.php');
+
+        $pusher = new Pusher(
+            'b1ed0160cc1033ce4f54',
+            'b8c985250b64b569c5c3',
+            '464485',
+            $options
+        );
+
+        $pusher->trigger($channel, $event, $data);
+    }
+
+    private function serialize($object, $group)
+    {
+        $classMetadataFactory = new ClassMetadataFactory(new YamlFileLoader(__DIR__.'/../Resources/config/serialization.yml'));
+        $normalizer = new ObjectNormalizer($classMetadataFactory);
+        $serializer = new Serializer(array($normalizer));
+
+        $data = $serializer->normalize($object, null, array('groups' => array($group)));
+
+        return json_encode($data);
+    }
+
+    /**
+     *
+     * @ApiDoc(description="Actualiser les infos de tout les joueurs")
+     *
+     * @Rest\Get("/refreshGame/{code}")
+     */
+    public function refreshGameAction($code)
+    {
+        $game = $this->getDoctrine()->getRepository('AppBundle:Game')->findOneBy(array('code' => $code));
+
+        $data = $this->serialize($game, 'game');
+        $this->pusher($game->getCode(), 'game', $data);
+
+        return new JsonResponse(['message' => 'Refresh'], Response::HTTP_OK);
+    }
+
     /**
      *
      * @ApiDoc(description="Récupérer toutes les parties en cours", output= { "class"=Game::class })
@@ -43,6 +95,54 @@ class GameController extends Controller
     public function getGameAction($code)
     {
         $entity = $this->getDoctrine()->getRepository('AppBundle:Game')->findByCode($code);
+
+        if (empty($entity)) {
+            return View::create(['message' => 'Cette partie n\'existe pas'], Response::HTTP_NOT_FOUND);
+        }
+
+        return $entity;
+    }
+
+    /**
+     *
+     * @ApiDoc(description="Lancer une partie")
+     *
+     * @Rest\View(serializerGroups={"game"})
+     * @Rest\Get("/game/start/{code}")
+     */
+    public function startGameAction($code)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $this->getDoctrine()->getRepository('AppBundle:Game')->findOneByCode($code);
+
+        $entity->setIsStarted(true);
+        $em->persist($entity);
+        $em->flush();
+
+        if (empty($entity)) {
+            return View::create(['message' => 'Cette partie n\'existe pas'], Response::HTTP_NOT_FOUND);
+        }
+
+        return $entity;
+    }
+
+    /**
+     *
+     * @ApiDoc(description="Finir une partie")
+     *
+     * @Rest\View(serializerGroups={"game"})
+     * @Rest\Get("/game/end/{code}")
+     */
+    public function endGameAction($code)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $this->getDoctrine()->getRepository('AppBundle:Game')->findOneByCode($code);
+
+        $entity->setIsFinished(true);
+        $em->persist($entity);
+        $em->flush();
 
         if (empty($entity)) {
             return View::create(['message' => 'Cette partie n\'existe pas'], Response::HTTP_NOT_FOUND);
@@ -133,7 +233,7 @@ class GameController extends Controller
         }
     }
 
-    public function randomCode($length = 4) {
+    private function randomCode($length = 4) {
         $str = "";
         $characters = array_merge(range('a','z'), range('0','9'));
         $max = count($characters) - 1;
