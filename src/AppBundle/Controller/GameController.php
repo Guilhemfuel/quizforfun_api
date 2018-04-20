@@ -153,6 +153,43 @@ class GameController extends Controller
 
     /**
      *
+     * @ApiDoc(description="Passer à la question suivante")
+     *
+     * @Rest\View(serializerGroups={"game"})
+     * @Rest\Get("/game/nextQuestion/{code}")
+     */
+    public function nextQuestionAction($code)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $this->getDoctrine()->getRepository('AppBundle:Game')->findOneByCode($code);
+
+        $count = 0;
+        $count = count(json_decode($entity->getQuestions(), true));
+
+        $currentQuestion = $entity->getCurrentQuestion();
+
+        if ($currentQuestion == $count)
+        {
+            $entity->setIsFinished(true);
+        }
+        else
+        {
+            $entity->setCurrentQuestion($currentQuestion + 1);
+        }
+
+        $em->persist($entity);
+        $em->flush();
+
+        if (empty($entity)) {
+            return View::create(['message' => 'Cette partie n\'existe pas'], Response::HTTP_NOT_FOUND);
+        }
+
+        return $entity;
+    }
+
+    /**
+     *
      * @ApiDoc(description="Créer une partie")
      *
      * @Rest\View(statusCode=201, serializerGroups={"game"})
