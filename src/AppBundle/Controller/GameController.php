@@ -193,6 +193,21 @@ class GameController extends Controller
 
     /**
      *
+     * @ApiDoc(description="Déclencher le timer")
+     *
+     * @Rest\Get("/game/startTimer/{code}")
+     */
+    public function startTimerAction($code)
+    {
+        $game = $this->getDoctrine()->getRepository('AppBundle:Game')->findOneBy(array('code' => $code));
+
+        $this->pusher($game->getCode(), 'timer', true);
+
+        return new JsonResponse(['message' => 'Timer Refresh'], Response::HTTP_OK);
+    }
+
+    /**
+     *
      * @ApiDoc(description="Créer une partie")
      *
      * @Rest\View(statusCode=201, serializerGroups={"game"})
