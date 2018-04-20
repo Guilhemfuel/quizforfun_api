@@ -167,15 +167,18 @@ class GameController extends Controller
         $count = 0;
         $count = count(json_decode($entity->getQuestions(), true));
 
+        // Aligner l'array qui commence à 0 avec le nb total
+        $count = ($count > 0) ? $count - 1 : 0;
+
         $currentQuestion = $entity->getCurrentQuestion();
 
-        if ($currentQuestion == $count)
+        if ($currentQuestion < $count)
         {
-            $entity->setIsFinished(true);
+            $entity->setCurrentQuestion($currentQuestion + 1);
         }
         else
         {
-            $entity->setCurrentQuestion($currentQuestion + 1);
+            $entity->setIsFinished(true);
         }
 
         $em->persist($entity);
