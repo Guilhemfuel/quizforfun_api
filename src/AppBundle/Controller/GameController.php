@@ -210,14 +210,14 @@ class GameController extends Controller
      *
      * @ApiDoc(description="Finir une partie")
      *
-     * @Rest\Get("/game/submitAnswer/{player}/{answer}")
+     * @Rest\Get("/game/submitAnswer/{fingerprint}/{idAnswer}")
      */
-    public function submitAnswerAction($player, $answer)
+    public function submitAnswerAction($fingerprint, $idAnswer)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $player = $this->getDoctrine()->getRepository('AppBundle:Player')->findOneByFingerprint($player);
-        $answer = $this->getDoctrine()->getRepository('AppBundle:Answer')->findOneById($answer);
+        $player = $this->getDoctrine()->getRepository('AppBundle:Player')->getCurrentPlayerInGame($fingerprint);
+        $answer = $this->getDoctrine()->getRepository('AppBundle:Answer')->findOneById($idAnswer);
 
         if (empty($player)) {
             return View::create(['message' => 'Ce joueur n\'existe pas'], Response::HTTP_NOT_FOUND);
