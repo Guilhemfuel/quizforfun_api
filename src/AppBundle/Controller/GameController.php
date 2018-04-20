@@ -208,6 +208,39 @@ class GameController extends Controller
 
     /**
      *
+     * @ApiDoc(description="Finir une partie")
+     *
+     * @Rest\Get("/game/submitAnswer/{player}/{answer}")
+     */
+    public function submitAnswerAction($player, $answer)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $player = $this->getDoctrine()->getRepository('AppBundle:Player')->findOneByFingerprint($player);
+        $answer = $this->getDoctrine()->getRepository('AppBundle:Answer')->findOneById($answer);
+
+        if (empty($player)) {
+            return View::create(['message' => 'Ce joueur n\'existe pas'], Response::HTTP_NOT_FOUND);
+        }
+
+        if (empty($answer)) {
+            return View::create(['message' => 'Cette réponse n\'existe pas'], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($answer->getGoodAnswer())
+        {
+            $player->setScore($player->getScore() + 1);
+            $em->persist($player);
+            $em->flush();
+
+            return new JsonResponse(['answer' => true], Response::HTTP_OK);
+        }
+
+        return new JsonResponse(['answer' => false], Response::HTTP_OK);
+    }
+
+    /**
+     *
      * @ApiDoc(description="Créer une partie")
      *
      * @Rest\View(statusCode=201, serializerGroups={"game"})
