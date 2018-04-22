@@ -83,9 +83,9 @@ class Game
     /**
      * @var bool
      *
-     * @ORM\Column(name="answered", type="boolean", nullable=true)
+     * @ORM\Column(name="timerIsStarted", type="boolean", nullable=true)
      */
-    private $answered = 0;
+    private $timerIsStarted = 0;
 
 
     /**
@@ -275,27 +275,27 @@ class Game
     }
 
     /**
-     * Set answered
+     * Set timerIsStarted
      *
-     * @param boolean $answered
+     * @param boolean $timerIsStarted
      *
      * @return Game
      */
-    public function setAnswered($answered = 0)
+    public function setTimerIsStarted($timerIsStarted = 0)
     {
-        $this->answered = $answered;
+        $this->timerIsStarted = $timerIsStarted;
 
         return $this;
     }
 
     /**
-     * Get answered
+     * Get timerIsStarted
      *
      * @return bool
      */
-    public function getAnswered()
+    public function getTimerIsStarted()
     {
-        return $this->answered;
+        return $this->timerIsStarted;
     }
 
     /**
@@ -307,7 +307,7 @@ class Game
         $this->nbPlayerMax = 10;
         $this->isStarted = 0;
         $this->isFinished = 0;
-        $this->answered = 0;
+        $this->timerIsStarted = 0;
         $this->players = new \Doctrine\Common\Collections\ArrayCollection();
     }
 

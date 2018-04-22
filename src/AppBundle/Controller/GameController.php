@@ -174,7 +174,7 @@ class GameController extends Controller
 
         if ($currentQuestion < $count)
         {
-            $entity->setAnswered(0);
+            $entity->setTimerIsStarted(0);
             $entity->setCurrentQuestion($currentQuestion + 1);
         }
         else
@@ -205,9 +205,9 @@ class GameController extends Controller
         $game = $this->getDoctrine()->getRepository('AppBundle:Game')->findOneBy(array('code' => $code));
 
         // Si c'est la première fois qu'un joueur répond à la question on lance le chrono pour tout le monde sinon on ne fait rien
-        if (!$game->getAnswered())
+        if (!$game->getTimerIsStarted())
         {
-            $game->setAnswered(1);
+            $game->setTimerIsStarted(1);
             $em->persist($game);
             $em->flush();
 
