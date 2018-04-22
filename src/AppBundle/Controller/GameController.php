@@ -210,7 +210,7 @@ class GameController extends Controller
      *
      * @ApiDoc(description="Finir une partie")
      *
-     * @Rest\Get("/game/submitAnswer/{$idPlayer}/{idAnswer}")
+     * @Rest\Get("/game/submitAnswer/{idPlayer}/{idAnswer}")
      */
     public function submitAnswerAction($idPlayer, $idAnswer)
     {
