@@ -174,6 +174,7 @@ class GameController extends Controller
 
         if ($currentQuestion < $count)
         {
+            $entity->setAnswered(0);
             $entity->setCurrentQuestion($currentQuestion + 1);
         }
         else
@@ -199,11 +200,23 @@ class GameController extends Controller
      */
     public function startTimerAction($code)
     {
+        $em = $this->getDoctrine()->getManager();
+
         $game = $this->getDoctrine()->getRepository('AppBundle:Game')->findOneBy(array('code' => $code));
 
-        $this->pusher($game->getCode(), 'timer', true);
+        // Si c'est la première fois qu'un joueur répond à la question on lance le chrono pour tout le monde sinon on ne fait rien
+        if (!$game->getAnswered())
+        {
+            $game->setAnswered(1);
+            $em->persist($game);
+            $em->flush();
 
-        return new JsonResponse(['message' => 'Timer Refresh'], Response::HTTP_OK);
+            $this->pusher($game->getCode(), 'timer', true);
+
+            return new JsonResponse(['message' => 'Timer Started'], Response::HTTP_OK);
+        }
+
+        return new JsonResponse(['message' => 'Timer already started'], Response::HTTP_OK);
     }
 
     /**

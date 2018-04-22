@@ -80,6 +80,13 @@ class Game
      */
     private $currentQuestion = 0;
 
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="answered", type="boolean", nullable=true)
+     */
+    private $answered = 0;
+
 
     /**
      * Get id
@@ -268,6 +275,30 @@ class Game
     }
 
     /**
+     * Set answered
+     *
+     * @param boolean $answered
+     *
+     * @return Game
+     */
+    public function setAnswered($answered = 0)
+    {
+        $this->answered = $answered;
+
+        return $this;
+    }
+
+    /**
+     * Get answered
+     *
+     * @return bool
+     */
+    public function getAnswered()
+    {
+        return $this->answered;
+    }
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -276,6 +307,7 @@ class Game
         $this->nbPlayerMax = 10;
         $this->isStarted = 0;
         $this->isFinished = 0;
+        $this->answered = 0;
         $this->players = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
