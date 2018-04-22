@@ -210,13 +210,13 @@ class GameController extends Controller
      *
      * @ApiDoc(description="Finir une partie")
      *
-     * @Rest\Get("/game/submitAnswer/{fingerprint}/{idAnswer}")
+     * @Rest\Get("/game/submitAnswer/{$idPlayer}/{idAnswer}")
      */
-    public function submitAnswerAction($fingerprint, $idAnswer)
+    public function submitAnswerAction($idPlayer, $idAnswer)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $player = $this->getDoctrine()->getRepository('AppBundle:Player')->getCurrentPlayerInGame($fingerprint);
+        $player = $this->getDoctrine()->getRepository('AppBundle:Player')->findOneById($idPlayer);
         $answer = $this->getDoctrine()->getRepository('AppBundle:Answer')->findOneById($idAnswer);
 
         if (empty($player)) {
