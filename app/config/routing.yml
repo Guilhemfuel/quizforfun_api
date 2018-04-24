@@ -9,19 +9,15 @@ app:
 games:
     type:     rest
     resource: AppBundle\Controller\GameController
-    prefix: /api
 
 players:
     type:     rest
     resource: AppBundle\Controller\PlayerController
-    prefix: /api
 
 questions:
     type:     rest
     resource: AppBundle\Controller\QuestionController
-    prefix: /api
 
 answers:
     type:     rest
     resource: AppBundle\Controller\AnswerController
-    prefix: /api
