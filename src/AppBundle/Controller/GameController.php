@@ -274,7 +274,7 @@ class GameController extends Controller
 
             $em = $this->getDoctrine()->getManager();
 
-            $data = $this->forward('AppBundle:Question:getRandomQuestions', array('limit'  => 5));
+            $data = $this->forward('AppBundle:Question:getRandomQuestions', array('limit'  => 10));
 
             $entity->setQuestions($data->getContent());
             $em->persist($entity);
