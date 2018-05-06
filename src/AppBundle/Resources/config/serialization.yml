@@ -22,6 +22,8 @@ AppBundle\Entity\Game:
             groups: ['game']
         currentQuestion:
             groups: ['game']
+        timerIsStarted:
+            groups: ['game']
 
 AppBundle\Entity\Player:
     attributes:
