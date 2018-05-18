@@ -151,14 +151,7 @@ class GameController extends Controller
         return $entity;
     }
 
-    /**
-     *
-     * @ApiDoc(description="Passer à la question suivante")
-     *
-     * @Rest\View(serializerGroups={"game"})
-     * @Rest\Get("/game/nextQuestion/{code}")
-     */
-    public function nextQuestionAction($code)
+    private function nextQuestionAction($code)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -185,11 +178,9 @@ class GameController extends Controller
         $em->persist($entity);
         $em->flush();
 
-        if (empty($entity)) {
-            return View::create(['message' => 'Cette partie n\'existe pas'], Response::HTTP_NOT_FOUND);
-        }
+        sleep(5);
 
-        return $entity;
+        $this->refreshGameAction($code);
     }
 
     /**
@@ -212,6 +203,11 @@ class GameController extends Controller
             $em->flush();
 
             $this->pusher($game->getCode(), 'timer', true);
+
+            //On attend la fin du timer
+            sleep(6);
+
+            $this->nextQuestionAction($code);
 
             return new JsonResponse(['message' => 'Timer Started'], Response::HTTP_OK);
         }
