@@ -43,6 +43,6 @@ class LoadGamesData implements FixtureInterface
             $manager->persist($game);
         }
 
-        $manager->flush();
+        // $manager->flush();
     }
 }

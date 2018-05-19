@@ -56,6 +56,11 @@ class Player
     private $game;
 
 
+    public function __toString()
+    {
+        return (string) $this->getName();
+    }
+
     /**
      * Get id
      *

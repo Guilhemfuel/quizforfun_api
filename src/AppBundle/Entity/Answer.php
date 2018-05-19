@@ -42,6 +42,11 @@ class Answer
     private $question;
 
 
+    public function __toString()
+    {
+        return (string) $this->getAnswer();
+    }
+
     /**
      * Get id
      *

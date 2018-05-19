@@ -64,7 +64,7 @@ class Game
     private $isFinished = 0;
 
     /**
-     * @ORM\OneToMany(targetEntity="Player", mappedBy="game", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Player", mappedBy="game", cascade={"persist", "remove"})
      */
     private $players;
 
@@ -87,6 +87,11 @@ class Game
      */
     private $timerIsStarted = 0;
 
+
+    public function __toString()
+    {
+        return (string) $this->getCode();
+    }
 
     /**
      * Get id

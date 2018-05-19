@@ -10,7 +10,7 @@ parameters:
 
 framework:
     #esi: ~
-    #translator: { fallbacks: ['%locale%'] }
+    translator: { fallbacks: [ "en" ] }
     secret: '%secret%'
     router:
         resource: '%kernel.project_dir%/app/config/routing.yml'
@@ -71,7 +71,7 @@ fos_rest:
             xml: true
     format_listener:
         rules:
-            - { path: '^/html', priorities: ['html'], fallback_format: 'html', prefer_extension: false }
+            - { path: '^/admin', priorities: ['html'], fallback_format: 'html', prefer_extension: false }
             - { path: '^/', priorities: ['json'], fallback_format: 'json', prefer_extension: false }
     body_listener:
         enabled: true
@@ -81,6 +81,14 @@ fos_rest:
                 'Symfony\Component\Security\Core\Exception\BadCredentialsException': true
             codes:
                 'Symfony\Component\Security\Core\Exception\BadCredentialsException': 401
+
+easy_admin:
+    site_name: 'Quiz For Fun'
+    entities:
+        - AppBundle\Entity\Game
+        - AppBundle\Entity\Player
+        - AppBundle\Entity\Question
+        - AppBundle\Entity\Answer
 
 nelmio_cors:
     defaults:

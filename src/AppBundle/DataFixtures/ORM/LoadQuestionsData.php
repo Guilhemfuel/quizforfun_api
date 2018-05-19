@@ -19,7 +19,7 @@ class LoadQuestionsData implements FixtureInterface
             'Que signifie "Prosélytisme" ?',
             'Quel animal appelle-t-on aussi le "Hérisson des mers" ?',
             'Quelle entreprise fait faillit en 2008, accélérant le déclenchement de la crise économique modiale ?',
-            'En qquelle année Christophe Colomb débarque-t-il en Amérique ?',
+            'En quelle année Christophe Colomb débarque-t-il en Amérique ?',
             'Qui joue le chauffeur vengeur dans le film "Drive" de Nicolas Winding Rifn ?'
         );
 
