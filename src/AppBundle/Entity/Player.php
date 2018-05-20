@@ -50,6 +50,13 @@ class Player
     private $score;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="isFirst", type="boolean", nullable=true)
+     */
+    private $isFirstToAnswer = 0;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Game", inversedBy="players", cascade={"persist"})
      * @ORM\JoinColumn(name="game_id", referencedColumnName="id", nullable=false)
      */
@@ -165,6 +172,30 @@ class Player
     public function getScore()
     {
         return $this->score;
+    }
+
+    /**
+     * Set isFirstToAnswer
+     *
+     * @param boolean $isFirstToAnswer
+     *
+     * @return Player
+     */
+    public function setIsFirstToAnswer($isFirstToAnswer = 0)
+    {
+        $this->isFirstToAnswer = $isFirstToAnswer;
+
+        return $this;
+    }
+
+    /**
+     * Get isFirstToAnswer
+     *
+     * @return bool
+     */
+    public function getIsFirstToAnswer()
+    {
+        return $this->isFirstToAnswer;
     }
 
     /**

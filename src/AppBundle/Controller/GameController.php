@@ -201,9 +201,9 @@ class GameController extends Controller
      *
      * @ApiDoc(description="Déclencher le timer")
      *
-     * @Rest\Get("/game/startTimer/{code}")
+     * @Rest\Get("/game/startTimer/{code}/{id}")
      */
-    public function startTimerAction($code)
+    public function startTimerAction($code, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -212,11 +212,22 @@ class GameController extends Controller
         // Si c'est la première fois qu'un joueur répond à la question on lance le chrono pour tout le monde sinon on ne fait rien
         if (!$game->getTimerIsStarted())
         {
+            $message = null;
+
+            $player = $this->getDoctrine()->getRepository('AppBundle:Player')->find($id);
+
+            if ($player) {
+                $message = $player->getName() . ' a répondu en premier !';
+
+                $player->setIsFirstToAnswer(1);
+                $em->persist($player);
+            }
+
             $game->setTimerIsStarted(1);
             $em->persist($game);
             $em->flush();
 
-            $this->pusher($game->getCode(), 'timer', true);
+            $this->pusher($game->getCode(), 'timer', array('status' => true, 'message' => $message));
 
             //On attend la fin du timer
             sleep(6);
@@ -252,11 +263,32 @@ class GameController extends Controller
 
         if ($answer->getGoodAnswer())
         {
-            $player->setScore($player->getScore() + 1);
+            // On donne 1 point bonus si le joueur répond le premier
+            if ($player->getIsFirstToAnswer())
+            {
+                $player->setScore($player->getScore() + 2);
+            }
+            else {
+                $player->setScore($player->getScore() + 1);
+            }
+
+            $player->setIsFirstToAnswer(0);
+
             $em->persist($player);
             $em->flush();
 
             return new JsonResponse(['answer' => true], Response::HTTP_OK);
+        }
+        else {
+            // Le joueur perd 1 point pour une mauvaise réponse
+            if ($player->getIsFirstToAnswer())
+            {
+                $player->setScore($player->getScore() - 1);
+                $player->setIsFirstToAnswer(0);
+
+                $em->persist($player);
+                $em->flush();
+            }
         }
 
         return new JsonResponse(['answer' => false], Response::HTTP_OK);
