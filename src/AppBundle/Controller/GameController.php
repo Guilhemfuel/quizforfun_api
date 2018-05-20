@@ -52,6 +52,20 @@ class GameController extends Controller
     }
 
     /**
+     * @Rest\Get("/iswebview")
+     */
+    public function isWebViewAction(Request $request)
+    {
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == "com.guilhem.quizforfun") {
+            $webview = true;
+        } else {
+            $webview = false;
+        }
+
+        return new JsonResponse(['webview' => $webview], Response::HTTP_OK);
+    }
+
+    /**
      *
      * @ApiDoc(description="Actualiser les infos de tout les joueurs")
      *
