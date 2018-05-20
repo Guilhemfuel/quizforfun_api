@@ -354,4 +354,25 @@ class GameController extends Controller
         }
         return $str;
     }
+
+    /**
+     *
+     * @Rest\Get("/downloadApp")
+     */
+    public function downloadAppAction()
+    {
+        $filename = 'QuizForFun.apk';
+
+        $path = $this->get('kernel')->getRootDir(). "/../web/downloads/";
+        $content = file_get_contents($path.$filename);
+
+        $response = new Response();
+
+        //set headers
+        $response->headers->set('Content-Type', 'mime/type');
+        $response->headers->set('Content-Disposition', 'attachment;filename="'.$filename);
+
+        $response->setContent($content);
+        return $response;
+    }
 }
