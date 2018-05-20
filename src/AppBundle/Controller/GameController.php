@@ -361,7 +361,7 @@ class GameController extends Controller
      */
     public function downloadAppAction()
     {
-        $filename = 'QuizForFun.apk';
+        $filename = 'android%2F@guilhemfuel%2Fquiz-for-fun-ee13f96c-5a9d-11e8-a615-0a580a7820cc-signed.apk';
 
         $path = $this->get('kernel')->getRootDir(). "/../web/downloads/";
         $content = file_get_contents($path.$filename);
