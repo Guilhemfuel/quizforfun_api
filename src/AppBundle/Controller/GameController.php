@@ -261,15 +261,19 @@ class GameController extends Controller
             return View::create(['message' => 'Cette réponse n\'existe pas'], Response::HTTP_NOT_FOUND);
         }
 
+        $score = 0;
+
         if ($answer->getGoodAnswer())
         {
             // On donne 1 point bonus si le joueur répond le premier
             if ($player->getIsFirstToAnswer())
             {
                 $player->setScore($player->getScore() + 2);
+                $score = 2;
             }
             else {
                 $player->setScore($player->getScore() + 1);
+                $score = 1;
             }
 
             $player->setIsFirstToAnswer(0);
@@ -277,12 +281,13 @@ class GameController extends Controller
             $em->persist($player);
             $em->flush();
 
-            return new JsonResponse(['answer' => true], Response::HTTP_OK);
+            return new JsonResponse(['answer' => true, 'score' => $score], Response::HTTP_OK);
         }
         else {
             // Le joueur perd 1 point pour une mauvaise réponse
             if ($player->getIsFirstToAnswer())
             {
+                $score = -1;
                 $player->setScore($player->getScore() - 1);
                 $player->setIsFirstToAnswer(0);
 
@@ -291,7 +296,7 @@ class GameController extends Controller
             }
         }
 
-        return new JsonResponse(['answer' => false], Response::HTTP_OK);
+        return new JsonResponse(['answer' => false, 'score' => $score], Response::HTTP_OK);
     }
 
     /**
