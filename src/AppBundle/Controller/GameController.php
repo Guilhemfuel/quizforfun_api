@@ -258,7 +258,7 @@ class GameController extends Controller
         }
 
         if (empty($answer)) {
-            return new JsonResponse(['answer' => true, 'message' => 'Aucune réponse 0 point !', 'score' => 0], Response::HTTP_OK);
+            return new JsonResponse(['answer' => false, 'message' => 'Aucune réponse 0 point !', 'score' => 0], Response::HTTP_OK);
         }
 
         $message = 'Mauvaise réponse 0 point !';
