@@ -258,9 +258,10 @@ class GameController extends Controller
         }
 
         if (empty($answer)) {
-            return View::create(['message' => 'Cette réponse n\'existe pas'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['answer' => true, 'message' => 'Aucune réponse 0 point !', 'score' => 0], Response::HTTP_OK);
         }
 
+        $message = 'Mauvaise réponse 0 point !';
         $score = 0;
 
         if ($answer->getGoodAnswer())
@@ -269,10 +270,12 @@ class GameController extends Controller
             if ($player->getIsFirstToAnswer())
             {
                 $player->setScore($player->getScore() + 2);
+                $message = '+2 points pour vous !';
                 $score = 2;
             }
             else {
                 $player->setScore($player->getScore() + 1);
+                $message = '+1 points pour vous !';
                 $score = 1;
             }
 
@@ -281,12 +284,13 @@ class GameController extends Controller
             $em->persist($player);
             $em->flush();
 
-            return new JsonResponse(['answer' => true, 'score' => $score], Response::HTTP_OK);
+            return new JsonResponse(['answer' => true, 'message' => $message, 'score' => $score], Response::HTTP_OK);
         }
         else {
             // Le joueur perd 1 point pour une mauvaise réponse
             if ($player->getIsFirstToAnswer())
             {
+                $message = 'Trop vite ! -1 point !';
                 $score = -1;
                 $player->setScore($player->getScore() - 1);
                 $player->setIsFirstToAnswer(0);
@@ -296,7 +300,7 @@ class GameController extends Controller
             }
         }
 
-        return new JsonResponse(['answer' => false, 'score' => $score], Response::HTTP_OK);
+        return new JsonResponse(['answer' => false, 'message' => $message, 'score' => $score], Response::HTTP_OK);
     }
 
     /**
